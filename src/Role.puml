@@ -1,0 +1,69 @@
+!include ./Base.puml
+' Colors
+' ##################################
+
+!global $ROLE_BG_COLOR = "#e78e49"
+!global $ROLE_BORDER_COLOR = "#e78e49"
+
+' Styling
+' ##################################
+!function $setRoleClass($type) 
+    UpdateSkinparamsAndLegendEntry($type, $ROLE_BG_COLOR, $ELEMENT_FONT_COLOR, $ROLE_BORDER_COLOR)
+!return ""
+!endfunction
+' Layout
+' ##################################
+
+!procedure LAYOUT_WITH_LEGEND()
+hide stereotype
+legend right
+|<color:$LEGEND_TITLE_COLOR>**Legend**</color> |
+|<$PERSON_BG_COLOR> person |
+|<$SYSTEM_BG_COLOR> system |
+|<$ROLE_BG_COLOR> role |
+endlegend
+!endprocedure
+
+' Elements
+' ##################################
+
+!function $getRole($label, $techn, $descr, $sprite)
+!if ($descr == "") && ($sprite == "")
+!return '=='+$label+'\n'
+!endif
+!if ($descr == "") && ($sprite != "")
+!return '<$'+$sprite+'>\n=='+$label+'\n'
+!endif
+!if ($descr != "") && ($sprite == "")
+!return '=='+$label+'\n\n\n '+$descr
+!endif
+!if ($descr != "") && ($sprite != "")
+!return '=='+$label+'\n\n'+ $sprite+'\n\n '+$descr
+!endif
+!endfunction
+
+!unquoted procedure Role($alias, $label,$type="role", $techn="", $descr="", $sprite="", $tags="")
+$setRoleClass($type)
+rectangle "$getRole($label, $techn, $descr, $sprite)$getProps()" $toStereos($type) as $alias
+!endprocedure
+
+!unquoted procedure RoleParty($alias, $label, $descr="", $sprite="", $tags="")
+    Role($alias, $label, "party-role", "", $descr, $sprite)
+!endprocedure
+!unquoted procedure RoleDomain($alias, $label, $descr="", $sprite="", $tags="")
+    Role($alias, $label, "domain", "", $descr, $sprite)
+!endprocedure
+!unquoted procedure Role3rdSys($alias, $label, $descr="", $sprite="", $tags="")
+    Role($alias, $label, "3rd system", "", $descr, $sprite)
+!endprocedure
+
+!unquoted procedure RoleEvidence($alias, $label, $descr="", $sprite="", $tags="")
+    Role($alias, $label, "evidence", "", $descr, $sprite)
+!endprocedure
+
+' Boundaries
+' ##################################
+
+!unquoted procedure Role_Boundary($alias, $label, $tags="")
+Boundary($alias, $label, "Role", $tags)
+!endprocedure

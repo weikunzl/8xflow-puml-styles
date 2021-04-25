@@ -1,0 +1,71 @@
+!include ./Base.puml
+' Colors
+' ##################################
+
+!global $CONTAINER_BG_COLOR = "#dd669e"
+!global $CONTAINER_BORDER_COLOR = "#dd669e"
+
+' Styling
+' ##################################
+!function $setEvidenceClass($type) 
+    UpdateSkinparamsAndLegendEntry($type, $CONTAINER_BG_COLOR, $ELEMENT_FONT_COLOR, $CONTAINER_BORDER_COLOR)
+!return ""
+!endfunction
+' Layout
+' ##################################
+
+!procedure LAYOUT_WITH_LEGEND()
+hide stereotype
+legend right
+|<color:$LEGEND_TITLE_COLOR>**Legend**</color> |
+|<$PERSON_BG_COLOR> person |
+|<$SYSTEM_BG_COLOR> system |
+|<$CONTAINER_BG_COLOR> evidence |
+endlegend
+!endprocedure
+
+' Elements
+' ##################################
+
+!function $getEvidence($label, $techn, $descr, $sprite)
+!if ($descr == "") && ($sprite == "")
+!return '=='+$label+'\n'
+!endif
+!if ($descr == "") && ($sprite != "")
+!return '<$'+$sprite+'>\n=='+$label+'\n'
+!endif
+!if ($descr != "") && ($sprite == "")
+!return '=='+$label+'\n\n\n '+$descr
+!endif
+!if ($descr != "") && ($sprite != "")
+!return '=='+$label+'\n\n'+ $sprite+'\n\n '+$descr
+!endif
+!endfunction
+
+!unquoted procedure Evidence($alias, $label, $type="evidence", $techn="", $descr="", $sprite="", $tags="")
+$setEvidenceClass($type)
+rectangle "$getEvidence($label, $techn, $descr, $sprite)$getProps()" $toStereos($type) as $alias
+!endprocedure
+
+!unquoted procedure Rfp($alias, $label = "Request for Proposal", $sprite="", $descr="created_at\n expired_at", $tags="")
+Evidence($alias, $label, "RFP", "", $descr, $sprite, $tags)
+!endprocedure
+!unquoted procedure Proposal($alias, $label = "Proposal",  $sprite="",$descr="created_at", $tags="")
+Evidence($alias, $label, "proposal", "", $descr, $sprite, $tags)
+!endprocedure
+!unquoted procedure Contract($alias, $label = "Contract",  $sprite="",$descr="created_at", $tags="")
+Evidence($alias, $label, "contract", "", $descr, $sprite, $tags)
+!endprocedure
+!unquoted procedure Fr($alias, $label = "Fulfillment Requset", $sprite="", $descr="start_at\n expired_at", $tags="")
+Evidence($alias, $label, "fulfillment", "", $descr, $sprite, $tags)
+!endprocedure
+!unquoted procedure Fc($alias, $label = "Fulfillment Confrimed",  $sprite="",$descr="created_at", $tags="")
+Evidence($alias, $label, "fulfillment", "", $descr, $sprite, $tags)
+!endprocedure
+
+' Boundaries
+' ##################################
+
+!unquoted procedure Evidence_Boundary($alias, $label, $tags="")
+Boundary($alias, $label, "Evidence", $tags)
+!endprocedure

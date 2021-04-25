@@ -1,0 +1,66 @@
+!include ./Base.puml
+
+' Colors
+' ##################################
+
+!global $PARTICIPANT_BG_COLOR = "#4ca663"
+!global $PARTICIPANT_BORDER_COLOR = "#4ca663"
+
+' Layout
+' ##################################
+
+!procedure LAYOUT_WITH_LEGEND()
+hide stereotype
+legend right
+|<color:$LEGEND_TITLE_COLOR>**Legend**</color> |
+|<$PERSON_BG_COLOR> person |
+|<$SYSTEM_BG_COLOR> system |
+|<$PARTICIPANT_BORDER_COLOR> thing |
+endlegend
+!endprocedure
+
+' Styling
+' ##################################
+!function $setParticipantClass($type)
+UpdateSkinparamsAndLegendEntry($type, $PARTICIPANT_BG_COLOR, $ELEMENT_FONT_COLOR, $PARTICIPANT_BORDER_COLOR)
+!return ""
+!endfunction
+
+' Elements
+' ##################################
+
+!function $getParticipant($label, $techn, $descr, $sprite)
+!if ($descr == "") && ($sprite == "")
+!return '=='+$label+'\n'
+!endif
+!if ($descr == "") && ($sprite != "")
+!return '<$'+$sprite+'>\n=='+$label+'\n'
+!endif
+!if ($descr != "") && ($sprite == "")
+!return '=='+$label+'\n\n\n '+$descr
+!endif
+!if ($descr != "") && ($sprite != "")
+!return '<$'+$sprite+'>\n=='+$label+'\n\n\n '+$descr
+!endif
+!endfunction
+
+!unquoted procedure Participant($alias, $label, $type="participant", $techn="", $descr="", $sprite="", $tags="")
+$setParticipantClass($type)
+rectangle "$getParticipant($label, $techn, $descr, $sprite)$getProps()" $toStereos($type) as $alias
+!endprocedure
+!unquoted procedure Party($alias, $label, $descr="", $sprite="", $tags="")
+Participant($alias, $label, "party", "", $descr="", $sprite="", $tags="")
+!endprocedure
+!unquoted procedure Thing($alias, $label, $descr="", $sprite="", $tags="")
+Participant($alias, $label, "thing", "", $descr="", $sprite="", $tags="")
+!endprocedure
+!unquoted procedure Place($alias, $label, $descr="", $sprite="", $tags="")
+Participant($alias, $label, "place", "", $descr="", $sprite="", $tags="")
+!endprocedure
+
+' Boundaries
+' ##################################
+
+!unquoted procedure Participant_Boundary($alias, $label, $tags="")
+Boundary($alias, $label, "Participant", $tags)
+!endprocedure

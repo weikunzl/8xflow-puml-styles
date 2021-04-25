@@ -1,0 +1,469 @@
+' PlantUML
+
+' Colors
+' ##################################
+
+!global $ELEMENT_FONT_COLOR = "#FFFFFF"
+
+!global $ARROW_COLOR = "#666666"
+
+!global $BOUNDARY_COLOR = "#444444"
+
+!global $LEGEND_FONT_COLOR = "#FFFFFF"
+!global $LEGEND_TITLE_COLOR = "#000000"
+!global $LEGEND_UNDEFINED_BK_COLOR = "#87AECA"
+!global $LEGEND_UNDEFINED_FONT_COLOR = "#B7DEFA"
+
+' Styling
+' ##################################
+
+!global $TECHN_FONT_SIZE = 12
+
+skinparam defaultTextAlignment center
+
+skinparam wrapWidth 150
+skinparam MinClassWidth 150
+skinparam maxMessageSize 120
+
+skinparam LegendBorderColor transparent
+skinparam LegendBackgroundColor transparent
+skinparam LegendFontColor $LEGEND_FONT_COLOR
+skinparam roundcorner 20
+
+skinparam rectangle {
+    StereotypeFontSize 12
+    shadowing false
+}
+
+skinparam Arrow {
+    Color $ARROW_COLOR
+    FontColor $ARROW_COLOR
+    FontSize 12
+}
+
+' Some boundary skinparam have to be set a package skinparams too (PlantUML uses internal packages)
+skinparam package {
+    StereotypeFontSize 0
+    FontStyle plain
+}
+
+skinparam rectangle<<boundary>> {
+    Shadowing false
+    StereotypeFontSize 0
+    FontColor $BOUNDARY_COLOR
+    BorderColor $BOUNDARY_COLOR
+    BorderStyle dashed
+}
+
+' Legend and Tags
+' ##################################
+!global $tagDefaultLegend = ""
+!global $tagCustomLegend = ""
+
+!unquoted function $toStereos($elementType)
+  ' has to be last, otherwise PlantUML overwrites all tag specific skinparams
+  !$stereos = '<<' + $elementType + '>>'
+%set_variable_value("$" + $elementType + "Legend", %true())
+  !return $stereos
+!endfunction
+
+!function $elementTagSkinparams($element, $type, $bgColor, $fontColor, $borderColor, $shadowing)
+  !$elementSkin = "skinparam " + $element +"<<" + $type + ">> {" + %newline()
+  !if ($fontColor!="")
+    !$elementSkin = $elementSkin + "    StereotypeFontColor " + $fontColor + %newline()
+    !$elementSkin = $elementSkin + "    FontColor " + $fontColor + %newline()
+  !endif
+  !if ($bgColor!="")
+    !$elementSkin = $elementSkin + "    BackgroundColor " + $bgColor + %newline()
+  !endif
+  !if ($borderColor!="")
+    !$elementSkin = $elementSkin + "    BorderColor " + $borderColor+ %newline()
+  !endif
+  !if ($shadowing == "true")
+    !$elementSkin = $elementSkin + "    Shadowing<<" + $type + ">> " + "true" + %newline()
+  !endif
+  !if ($shadowing == "false")
+    !$elementSkin = $elementSkin + "    Shadowing<<" + $type + ">> " + "false" + %newline()
+  !endif
+  !$elementSkin = $elementSkin + "}" + %newline()
+  !return $elementSkin
+!endfunction
+
+!unquoted procedure $defineSkinparams($type, $bgColor, $fontColor, $borderColor, $shadowing)
+  !$tagSkin = $elementTagSkinparams("rectangle", $type, $bgColor, $fontColor, $borderColor, $shadowing)
+'   !$tagSkin = $tagSkin + $elementTagSkinparams("database", $tagStereo, $bgColor, $fontColor, $borderColor, $shadowing)
+'   !$tagSkin = $tagSkin + $elementTagSkinparams("queue", $tagStereo, $bgColor, $fontColor, $borderColor, $shadowing)
+$tagSkin
+!endprocedure
+
+!function $tagLegendEntry($type, $bgColor, $fontColor, $borderColor, $shadowing)
+  !$tagEntry = "|"
+  !if ($bgColor!="")
+    !$bg = $bgColor
+  !else
+    !$bg = $LEGEND_UNDEFINED_BK_COLOR
+  !endif
+  ' named colors have to start with # too 
+  !if (%substr($bg, 0, 1) != "#")
+    !$bg = "#" + $bg
+  !endif
+  !$tagEntry = $tagEntry + "<" + $bg +">" 
+  ' <U+25AF> ..white rectangle
+  !if ($borderColor!="")
+    !$tagEntry = $tagEntry + "<color:"+$borderColor+"> <U+25AF></color> "
+  !else
+    !$tagEntry = $tagEntry + "<color:"+$bg+"> <U+25AF></color> "
+  !endif
+  !if ($fontColor!="")
+    !$tagEntry = $tagEntry + "<color:"+$fontColor+">"
+  !else
+    !$tagEntry = $tagEntry + "<color:"+$LEGEND_UNDEFINED_FONT_COLOR+">"
+  !endif
+  !$tagEntry = $tagEntry + " " + $type + " "
+  !if ($shadowing == "true")
+    !$tagEntry = $tagEntry + "(shadow) "
+  !endif
+  !if ($shadowing == "false")
+    !$tagEntry = $tagEntry + "(no shadow) "
+  !endif
+  !if ($fontColor == "" && $bgColor == "")
+      !$tagEntry = $tagEntry + "(no font, no back color) "
+  !else 
+    !if ($fontColor == "")
+      !$tagEntry = $tagEntry + "(no font color) "
+    !endif
+    !if ($bgColor == "")
+      !$tagEntry = $tagEntry + "(no back color) "
+    !endif
+  !endif
+  !$tagEntry = $tagEntry + "</color> "
+  !$tagEntry = $tagEntry + "|"
+  !return $tagEntry 
+!endfunction
+
+!procedure $showActiveLegendEntries($allDefined)
+  !$brPos = %strpos($allDefined, "\n")
+  !while ($brPos >= 0)
+    !$type = %substr($allDefined, 0, $brPos)
+    !$allDefined = %substr($allDefined, $brPos+2)
+    !$brPos = %strpos($allDefined, "\n")
+    !if (%variable_exists("$" + $type + "Legend"))
+%get_variable_value("$" + $type + "LegendEntry")
+    !endif
+  !endwhile
+  !if (%strlen($allDefined)>0)
+    !$type = $allDefined
+    !if (%variable_exists("$" + $type + "Legend"))
+%get_variable_value("$" + $type + "LegendEntry")
+    !endif
+  !endif
+!endprocedure
+
+' used by existing elements like person, ...
+!unquoted procedure UpdateSkinparamsAndLegendEntry($type, $bgColor="", $fontColor="", $borderColor="", $shadowing="")
+$defineSkinparams($type, $bgColor, $fontColor, $borderColor, $shadowing)
+  !$tagEntry = $tagLegendEntry($type, $bgColor, $fontColor, $borderColor, $shadowing)
+%set_variable_value("$" + $type + "LegendEntry", $tagEntry)
+!endprocedure
+
+' Element properties
+' ##################################
+
+' collect all defined properties as table rows
+!global $propTable = ""
+!global $propTableCaption = ""
+!global $propColCaption = "="
+
+!unquoted function SetPropertyHeader($col1Name, $col2Name, $col3Name = "", $col4Name = "")
+  !$propColCaption = ""
+  !$propTableCaption = "|= " + $col1Name + " |= " + $col2Name + " |"
+  !if ($col3Name != "")
+    !$propTableCaption = $propTableCaption + "= " + $col3Name + " |"
+  !endif
+  !if ($col4Name != "")
+    !$propTableCaption = $propTableCaption + "= " + $col4Name + " |"
+  !endif
+  !return ""
+!endfunction
+
+!unquoted function WithoutPropertyHeader()
+  !$propTableCaption = ""
+  !$propColCaption = "="
+  !return ""
+!endfunction
+
+!unquoted function AddProperty($col1, $col2, $col3 = "", $col4 = "")
+  !if ($propTable == "")
+    !if ($propTableCaption != "")
+      !$propTable = $propTableCaption + "\n"
+    !endif
+  !else
+    !$propTable = $propTable + "\n"
+  !endif
+  !$propTable = $propTable + "| " + $col1 + " |" + $propColCaption + " " + $col2 + " |"
+  !if ($col3 != "")
+    !$propTable = $propTable + " " + $col3 + " |"
+  !endif
+  !if ($col4 != "")
+    !$propTable = $propTable + " " + $col4 + " |"
+  !endif
+  !return ""
+!endfunction
+
+!unquoted function $getProps($alignedNL = "\n")
+  !if ($propTable != "")
+    !$retTable = $alignedNL + $propTable
+    !$propTable = ""
+    !return $retTable
+  !endif
+  !return ""
+!endfunction
+
+!unquoted function $getProps_L()
+  !return $getProps("\l")
+!endfunction
+
+!unquoted function $getProps_R()
+  !return $getProps("\r")
+!endfunction
+
+SetPropertyHeader("Property","Value")
+
+' Layout
+' ##################################
+
+!procedure HIDE_STEREOTYPE()
+hide stereotype
+!endprocedure
+
+!procedure LAYOUT_AS_SKETCH()
+skinparam backgroundColor #EEEBDC
+skinparam handwritten true
+skinparam defaultFontName "Comic Sans MS"
+center footer <font color=red>Warning:</font> Created for discussion, needs to be validated
+!endprocedure
+
+!procedure LAYOUT_TOP_DOWN()
+top to bottom direction
+!endprocedure
+
+!procedure LAYOUT_LEFT_RIGHT() 
+left to right direction
+!endprocedure
+
+' has to be last call in diagram
+!unquoted procedure SHOW_DYNAMIC_LEGEND($hideStereotype="true")
+!if ($hideStereotype=="true")
+hide stereotype
+!endif
+legend right
+|<color:$LEGEND_TITLE_COLOR>**Legend**</color> |
+$showActiveLegendEntries($tagDefaultLegend)
+$showActiveLegendEntries($tagCustomLegend)
+endlegend
+!endprocedure
+
+' Boundaries
+' ##################################
+
+!function $getBoundary($label, $type)
+  !if ($type == "")
+    !return '==' + $label
+  !endif
+  !if (type != "")
+    !return '==' + $label + '\n<size:' + $TECHN_FONT_SIZE + '>[' + $type + ']</size>'
+  !endif
+!endfunction
+
+!unquoted procedure Boundary($alias, $label, $type="", $tags="")
+rectangle "$getBoundary($label, $type)" $toStereos("boundary") as $alias
+!endprocedure
+
+' Relationship
+' ##################################
+
+!unquoted procedure Rel_($alias1, $alias2, $label, $direction)
+$alias1 $direction $alias2 : **$label**
+!endprocedure
+!unquoted procedure Rel_($alias1, $alias2, $label, $techn, $direction)
+$alias1 $direction $alias2 : **$label**\n//<size:$TECHN_FONT_SIZE>[$techn]</size>//
+!endprocedure
+
+!unquoted procedure Rel($from, $to, $label)
+Rel_($from, $to, $label, "-->>")
+!endprocedure
+!unquoted procedure Rel($from, $to, $label, $techn)
+Rel_($from, $to, $label, $techn, "-->>")
+!endprocedure
+
+!unquoted procedure BiRel($from, $to, $label)
+Rel_($from, $to, $label, "<<-->>")
+!endprocedure
+!unquoted procedure BiRel($from, $to, $label, $techn)
+Rel_($from, $to, $label, $techn, "<<-->>")
+!endprocedure
+
+!unquoted procedure Rel_Back($from, $to, $label)
+Rel_($from, $to, $label, "<<--")
+!endprocedure
+!unquoted procedure Rel_Back($from, $to, $label, $techn)
+Rel_($from, $to, $label, $techn, "<<--")
+!endprocedure
+
+!unquoted procedure Rel_Neighbor($from, $to, $label)
+Rel_($from, $to, $label, "->>")
+!endprocedure
+!unquoted procedure Rel_Neighbor($from, $to, $label, $techn)
+Rel_($from, $to, $label, $techn, "->>")
+!endprocedure
+
+!unquoted procedure Rel_Back_Neighbor($from, $to, $label)
+Rel_($from, $to, $label, "<<-")
+!endprocedure
+!unquoted procedure Rel_Back_Neighbor($from, $to, $label, $techn)
+Rel_($from, $to, $label, $techn, "<<-")
+!endprocedure
+
+!unquoted procedure Rel_D_dashed($from, $to, $label)
+Rel_($from, $to, $label, ".DOWN->>")
+!endprocedure
+!unquoted procedure Rel_D_dashed($from, $to, $label, $techn)
+Rel_($from, $to, $label, $techn, ".DOWN->>")
+!endprocedure
+!unquoted procedure Rel_U_dashed($from, $to, $label)
+Rel_($from, $to, $label, ".UP->>")
+!endprocedure
+!unquoted procedure Rel_U_dashed($from, $to, $label, $techn)
+Rel_($from, $to, $label, $techn, ".UP->>")
+!endprocedure
+!unquoted procedure Rel_R_dashed($from, $to, $label)
+Rel_($from, $to, $label, ".RIGHT->>")
+!endprocedure
+!unquoted procedure Rel_R_dashed($from, $to, $label, $techn)
+Rel_($from, $to, $label, $techn, ".RIGHT->>")
+!endprocedure
+!unquoted procedure Rel_L_dashed($from, $to, $label)
+Rel_($from, $to, $label, ".Left->>")
+!endprocedure
+!unquoted procedure Rel_L_dashed($from, $to, $label, $techn)
+Rel_($from, $to, $label, $techn, ".Left->>")
+!endprocedure
+!unquoted procedure Rel_D($from, $to, $label)
+Rel_($from, $to, $label, "-DOWN->>")
+!endprocedure
+!unquoted procedure Rel_D($from, $to, $label, $techn)
+Rel_($from, $to, $label, $techn, "-DOWN->>")
+!endprocedure
+!unquoted procedure Rel_Down($from, $to, $label)
+Rel_($from, $to, $label, "-DOWN->>")
+!endprocedure
+!unquoted procedure Rel_Down($from, $to, $label, $techn)
+Rel_($from, $to, $label, $techn, "-DOWN->>")
+!endprocedure
+
+!unquoted procedure BiRel_D($from, $to, $label)
+Rel_($from, $to, $label, "<<-DOWN->>")
+!endprocedure
+!unquoted procedure BiRel_D($from, $to, $label, $techn)
+Rel_($from, $to, $label, $techn, "<<-DOWN->>")
+!endprocedure
+!unquoted procedure BiRel_Down($from, $to, $label)
+Rel_($from, $to, $label, "<<-DOWN->>")
+!endprocedure
+!unquoted procedure BiRel_Down($from, $to, $label, $techn)
+Rel_($from, $to, $label, $techn, "<<-DOWN->>")
+!endprocedure
+
+!unquoted procedure Rel_U($from, $to, $label)
+Rel_($from, $to, $label, "-UP->>")
+!endprocedure
+!unquoted procedure Rel_U($from, $to, $label, $techn)
+Rel_($from, $to, $label, $techn, "-UP->>")
+!endprocedure
+!unquoted procedure Rel_Up($from, $to, $label)
+Rel_($from, $to, $label, "-UP->>")
+!endprocedure
+!unquoted procedure Rel_Up($from, $to, $label, $techn)
+Rel_($from, $to, $label, $techn, "-UP->>")
+!endprocedure
+
+!unquoted procedure BiRel_U($from, $to, $label)
+Rel_($from, $to, $label, "<<-UP->>")
+!endprocedure
+!unquoted procedure BiRel_U($from, $to, $label, $techn)
+Rel_($from, $to, $label, $techn, "<<-UP->>")
+!endprocedure
+!unquoted procedure BiRel_Up($from, $to, $label)
+Rel_($from, $to, $label, "<<-UP->>")
+!endprocedure
+!unquoted procedure BiRel_Up($from, $to, $label, $techn)
+Rel_($from, $to, $label, $techn, "<<-UP->>")
+!endprocedure
+
+!unquoted procedure Rel_L($from, $to, $label)
+Rel_($from, $to, $label, "-LEFT->>")
+!endprocedure
+!unquoted procedure Rel_L($from, $to, $label, $techn)
+Rel_($from, $to, $label, $techn, "-LEFT->>")
+!endprocedure
+!unquoted procedure Rel_Left($from, $to, $label)
+Rel_($from, $to, $label, "-LEFT->>")
+!endprocedure
+!unquoted procedure Rel_Left($from, $to, $label, $techn)
+Rel_($from, $to, $label, $techn, "-LEFT->>")
+!endprocedure
+
+!unquoted procedure BiRel_L($from, $to, $label)
+Rel_($from, $to, $label, "<<-LEFT->>")
+!endprocedure
+!unquoted procedure BiRel_L($from, $to, $label, $techn)
+Rel_($from, $to, $label, $techn, "<<-LEFT->>")
+!endprocedure
+!unquoted procedure BiRel_Left($from, $to, $label)
+Rel_($from, $to, $label, "<<-LEFT->>")
+!endprocedure
+!unquoted procedure BiRel_Left($from, $to, $label, $techn)
+Rel_($from, $to, $label, $techn, "<<-LEFT->>")
+!endprocedure
+
+!unquoted procedure Rel_R($from, $to, $label)
+Rel_($from, $to, $label, "-RIGHT->>")
+!endprocedure
+!unquoted procedure Rel_R($from, $to, $label, $techn)
+Rel_($from, $to, $label, $techn, "-RIGHT->>")
+!endprocedure
+!unquoted procedure Rel_Right($from, $to, $label)
+Rel_($from, $to, $label, "-RIGHT->>")
+!endprocedure
+!unquoted procedure Rel_Right($from, $to, $label, $techn)
+Rel_($from, $to, $label, $techn, "-RIGHT->>")
+!endprocedure
+
+!unquoted procedure BiRel_R($from, $to, $label)
+Rel_($from, $to, $label, "<<-RIGHT->>")
+!endprocedure
+!unquoted procedure BiRel_R($from, $to, $label, $techn)
+Rel_($from, $to, $label, $techn, "<<-RIGHT->>")
+!endprocedure
+!unquoted procedure BiRel_Right($from, $to, $label)
+Rel_($from, $to, $label, "<<-RIGHT->>")
+!endprocedure
+!unquoted procedure BiRel_Right($from, $to, $label, $techn)
+Rel_($from, $to, $label, $techn, "<<-RIGHT->>")
+!endprocedure
+
+' Layout Helpers
+' ##################################
+
+!unquoted procedure Lay_D($from, $to)
+$from -[hidden]D- $to
+!endprocedure
+!unquoted procedure Lay_U($from, $to)
+$from -[hidden]U- $to
+!endprocedure
+!unquoted procedure Lay_R($from, $to)
+$from -[hidden]R- $to
+!endprocedure
+!unquoted procedure Lay_L($from, $to)
+$from -[hidden]L- $to
+!endprocedure
