@@ -1,0 +1,57 @@
+!include ./src/Base.puml
+!include ./src/Evidences.puml
+!include ./src/Participant.puml
+!include ./src/Role.puml
+
+' Rfp(app)
+' Proposal(customer_service)
+' Contract(message_bus)
+' Fr(reporting_service)
+' Fc(audit_service)
+' Party(party, "Party")
+' Thing(thing, "Thing")
+' Place(place, "Place")
+' RoleParty(ptrole, "Audit Store")
+' Role3rdSys(third_sys, "Audit Store")
+' RoleEvidence(evidence_role, "Audit Store")
+Role3rdSys(WeChat, "WeChat Pay")
+
+RoleParty(平台管理员, "平台管理员")
+' Place(网站, "网站")
+RoleParty(appUser, "appUser")
+
+RoleParty(发布的信息, "发布的信息")
+
+
+Party(房东, "房东")
+Party(中介, "中介")
+Party(租客, "租客")
+' Proposal(住房信息, "住房信息")
+' Proposal(求租信息, "求租信息")
+' Thing(会员, "会员")
+
+Boundary(info, "信息发布服务") {
+    Proposal(发布房屋信息申请, "发布房屋信息申请")
+    Contract(房屋信息发布规范, "房屋信息发布规范")
+    Fr(审核发布信息, "审核发布信息")
+    Fc(展示房屋信息, "展示房屋信息")
+    Fc(驳回房屋信息, "驳回房屋信息")
+}
+
+
+LAYOUT_TOP_DOWN()
+
+Lay_D(appUser, info)
+
+Rel_D_dashed(房东, appUser, " ")
+Rel_D_dashed(中介, appUser, " ")
+Rel_D_dashed(租客, appUser, " ")
+
+Lay_U(appUser, info)
+
+Rel_U_dashed(appUser, 发布房屋信息申请, "1 : 1")
+Rel_D(发布房屋信息申请, 房屋信息发布规范, "N : 1")
+Rel_R(房屋信息发布规范, 审核发布信息, "1 : 1")
+Rel_D(审核发布信息, 展示房屋信息, "1 : 1")
+Rel_U(审核发布信息, 驳回房屋信息, "1 : 1")
+
