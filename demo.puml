@@ -18,28 +18,24 @@ Party(租客, "租客")
 ' Proposal(求租信息, "求租信息")
 ' Thing(会员, "会员")
 
-Boundary(info, "信息发布服务") {
+Boundary(information_publishing_service, "信息发布服务") {
     Proposal(发布房屋信息申请, "发布房屋信息申请")
     Contract(房屋信息发布规范, "房屋信息发布规范")
     Fr(审核发布信息, "审核发布信息")
-    Fc(展示房屋信息, "展示房屋信息")
-    Fc(驳回房屋信息, "驳回房屋信息")
+    Fc(确认房屋信息, "确认房屋信息")
 }
 
 
 LAYOUT_TOP_DOWN()
 
-Lay_D(appUser, info)
+Lay_D(appUser, information_publishing_service)
 
 Rel_D_dashed(房东, appUser, " ")
 Rel_D_dashed(中介, appUser, " ")
 Rel_D_dashed(租客, appUser, " ")
 
-Lay_U(appUser, info)
-
 Rel_U_dashed(appUser, 发布房屋信息申请, "1 : 1")
 Rel_D(发布房屋信息申请, 房屋信息发布规范, "N : 1")
 Rel_R(房屋信息发布规范, 审核发布信息, "1 : 1")
-Rel_D(审核发布信息, 展示房屋信息, "1 : 1")
-Rel_U(审核发布信息, 驳回房屋信息, "1 : 1")
+Rel_D(审核发布信息, 确认房屋信息, "1 : 1")
 
