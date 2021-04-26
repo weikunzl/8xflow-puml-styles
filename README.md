@@ -13,25 +13,36 @@ PlantUML 8xFlow theme
 时标：时间段(Fulfillment request)，时间点(其他)
 关键数据项：时标对象中的关键数据，如，价格
 ```puml
-Rfp(rfp) #RFP
-Proposal(proposal) #Proposal
-Contract(contract) #合同
-Fr(fulfillment_request) #Fulfillment Request
-Fc(fulfillment_confirmed) #Fulfillment Confirmed
+' Request for Proposa
+Rfp(rfp)
+' Proposal
+Proposal(proposal) 
+' 合同的签订
+Contract(contract) 
+' Fulfillment Request 合同生效履约请求
+Fr(fulfillment_request) 
+' Fulfillment confirmation 合同生效履约确认
+Fc(fulfillment_confirmation) 
 ```
 
 ### 参与者 - 绿色
 ```puml
-Party(party, "Party") #参与方：参与人，其他参与者
-Thing(thing, "Thing") #标的物(Optional)：权责当事人权利和义务所指向的对象。比如买卖合同中的商品，房屋租赁合同中的房屋。
-Place(place, "Place") #场所：合同发生的地方
+' 参与方：参与人，其他参与者
+Party(party, "Party") 
+' 标的物(Optional)：权责当事人权利和义务所指向的对象。比如买卖合同中的商品，房屋租赁合同中的房屋。
+Thing(thing, "Thing") 
+' 场所：合同发生的地方
+Place(place, "Place")
 ```
 
 ### 角色 -  橙色
 ```puml
-RoleParty(role_party, "RoleParty") #将实际参与方抽象为权利方和责任方
-RoleEvidence(evidence_role, "RoleEvidence") #将其他合同中的凭证作为履约凭证，作为变化点，抽象为角色
-Role3rdSys(third_sys, "Role3rdSys") #如果三方系统或复杂领域逻辑，通过拟人化手法抽象为角色
+' 将实际参与方抽象为权利方和责任方
+RoleParty(role_party, "RoleParty") 
+' 将其他合同中的凭证作为履约凭证，作为变化点，抽象为角色
+RoleEvidence(evidence_role, "RoleEvidence")
+' 如果三方系统或复杂领域逻辑，通过拟人化手法抽象为角色
+Role3rdSys(third_sys, "Role3rdSys") 
 ``` 
 
 ### 边界
