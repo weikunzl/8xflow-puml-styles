@@ -3,17 +3,6 @@
 !include ./src/Participant.puml
 !include ./src/Role.puml
 
-' Rfp(app)
-' Proposal(customer_service)
-' Contract(message_bus)
-' Fr(reporting_service)
-' Fc(audit_service)
-' Party(party, "Party")
-' Thing(thing, "Thing")
-' Place(place, "Place")
-' RoleParty(ptrole, "Audit Store")
-' Role3rdSys(third_sys, "Audit Store")
-' RoleEvidence(evidence_role, "Audit Store")
 Role3rdSys(WeChat, "WeChat Pay")
 
 RoleParty(平台管理员, "平台管理员")

@@ -56,10 +56,10 @@ Evidence($alias, $label, "proposal", "", $descr, $sprite, $tags)
 !unquoted procedure Contract($alias, $label = "Contract",  $sprite="",$descr="created_at", $tags="")
 Evidence($alias, $label, "contract", "", $descr, $sprite, $tags)
 !endprocedure
-!unquoted procedure Fr($alias, $label = "Fulfillment Requset", $sprite="", $descr="start_at\n expired_at", $tags="")
+!unquoted procedure Fr($alias, $label = "Fulfillment Request", $sprite="", $descr="start_at\n expired_at", $tags="")
 Evidence($alias, $label, "fulfillment", "", $descr, $sprite, $tags)
 !endprocedure
-!unquoted procedure Fc($alias, $label = "Fulfillment Confrimed",  $sprite="",$descr="created_at", $tags="")
+!unquoted procedure Fc($alias, $label = "Fulfillment Confirmed",  $sprite="",$descr="created_at", $tags="")
 Evidence($alias, $label, "fulfillment", "", $descr, $sprite, $tags)
 !endprocedure
 
