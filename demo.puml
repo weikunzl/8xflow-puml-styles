@@ -1,3 +1,5 @@
+@startuml
+
 !include ./src/Base.puml
 !include ./src/Evidences.puml
 !include ./src/Participant.puml
@@ -5,37 +7,87 @@
 
 Role3rdSys(WeChat, "WeChat Pay")
 
-RoleParty(平台管理员, "平台管理员")
-' Place(网站, "网站")
-RoleParty(appUser, "appUser")
-
-RoleParty(发布的信息, "发布的信息")
-
-Party(房东, "房东")
-Party(中介, "中介")
-Party(租客, "租客")
-' Proposal(住房信息, "住房信息")
-' Proposal(求租信息, "求租信息")
-' Thing(会员, "会员")
-
-Boundary(information_publishing_service, "信息发布服务") {
-    Proposal(发布房屋信息申请, "发布房屋信息申请")
-    Contract(房屋信息发布规范, "房屋信息发布规范")
-    Fr(审核发布信息, "审核发布信息")
-    Fc(确认房屋信息, "确认房屋信息")
-}
+Party(注册用户, "注册用户")
+Party(注册用户1, "注册用户")
+Party(注册用户2, "注册用户")
+Party(注册用户3, "注册用户")
+Party(注册用户4, "注册用户")
+Party(注册用户5, "注册用户")
+Party(注册用户6, "注册用户")
 
 
-LAYOUT_TOP_DOWN()
+RoleParty("出租方1", "出租方")
+RoleParty("出租方2", "出租方")
+RoleParty("出租方3", "出租方")
+RoleParty("出租方4", "出租方")
 
-Lay_D(appUser, information_publishing_service)
 
-Rel_D_dashed(房东, appUser, " ")
-Rel_D_dashed(中介, appUser, " ")
-Rel_D_dashed(租客, appUser, " ")
+RoleParty("求租方1", "求租方")
+RoleParty("求租方2", "求租方")
 
-Rel_U_dashed(appUser, 发布房屋信息申请, "1 : 1")
-Rel_D(发布房屋信息申请, 房屋信息发布规范, "N : 1")
-Rel_R(房屋信息发布规范, 审核发布信息, "1 : 1")
-Rel_D(审核发布信息, 确认房屋信息, "1 : 1")
 
+
+Rfp(推广服务购买请求, "推广服务购买请求")
+Proposal(平台报价, "平台报价", , "amount \n created_at")
+Contract(房源推广合同, "房源推广合同")
+Fr(房源推广请求, "房源推广请求")
+Fc(房源推广确认, "房源推广确认")
+Fr(房源推广支付请求,"房源推广支付请求")
+Fc(房源推广支付确认,"房源推广支付确认")
+
+
+'  hree is relationship
+Rel_D_dashed(注册用户1, 出租方1, " ")
+Ass_R(出租方1, 推广服务购买请求, "1 : N")
+Ass_R(推广服务购买请求, 平台报价, "1 : 1")
+Ass_R(平台报价, 房源推广合同, "1 : 1")
+Ass_D(房源推广合同, 房源推广请求, "1 : N")
+Ass_D(房源推广请求, 房源推广确认, "1 : 1")
+Ass_R(房源推广合同, 房源推广支付请求, "1 : N")
+Ass_R(房源推广支付请求, 房源推广支付确认, "1 : 1")
+
+
+Ass_U(WeChat, 房源推广支付确认, "1 : 1")
+
+Ass_U(出租方2, 房源推广确认, " ")
+Rel_R_dashed(注册用户2, 出租方2, "1 : N ")
+
+
+Rfp(出租房源发布请求, "出租房源发布请求")
+Proposal(出租房源审核响应,"出租房源审核响应")
+Contract(出租房源发布合同, "出租房源发布合同")
+Fr(出租审核通过确认请求, "出租审核通过确认请求")
+Fc(出租审核通过确认, "出租审核通过确认")
+
+
+Rel_D_dashed(注册用户3, 出租方3, " ")
+Ass_D(出租方3, 出租房源发布请求, "1 : N")
+Ass_D(出租房源发布请求, 出租房源审核响应, "1 : 1")
+Ass_D(出租房源审核响应, 出租房源发布合同, "1 : 1")
+Ass_D(出租房源发布合同, 出租审核通过确认请求, "1 : 1")
+Ass_D(出租审核通过确认请求, 出租审核通过确认, "1 : 1")
+
+Ass_U(出租方4, 出租审核通过确认, "1 : N ")
+Rel_U_dashed(注册用户4, 出租方4, " ")
+
+
+Rfp(求租房源发布请求, "求租房源发布请求")
+Proposal(求租房源审核响应,"求租房源审核响应")
+Contract(求租房源发布合同, "求租房源发布合同")
+Fr(求租审核通过确认请求, "求租审核通过确认请求")
+Fc(求租审核通过确认, "求租审核通过确认")
+
+
+Rel_D_dashed(注册用户5, 求租方1, " ")
+Ass_D(求租方1, 求租房源发布请求, "1 : N")
+Ass_D(求租房源发布请求, 求租房源审核响应, "1 : 1")
+Ass_D(求租房源审核响应, 求租房源发布合同, "1 : 1")
+Ass_D(求租房源发布合同, 求租审核通过确认请求, "1 : 1")
+Ass_D(求租审核通过确认请求, 求租审核通过确认, "1 : 1")
+
+Ass_U(求租方2, 求租审核通过确认, "1 : N")
+Rel_U_dashed(注册用户6, 求租方2, " ")
+
+
+
+@enduml
