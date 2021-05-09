@@ -467,3 +467,51 @@ $from -[hidden]R- $to
 !unquoted procedure Lay_L($from, $to)
 $from -[hidden]L- $to
 !endprocedure
+
+
+' Association
+' ##################################
+!unquoted procedure Ass_($alias1, $alias2, $label, $association)
+$alias1 $association $alias2 : **$label**
+!endprocedure
+
+!unquoted procedure Ass($from, $to, $label)
+Ass_($from, $to, $label, "--")
+!endprocedure
+
+
+!unquoted procedure Ass_U($from, $to, $label)
+Ass_($from, $to, $label, "-UP-")
+!endprocedure
+
+!unquoted procedure Ass_D($from, $to, $label)
+Ass_($from, $to, $label, "-DOWN-")
+!endprocedure
+
+!unquoted procedure Ass_U_dashed($from, $to, $label)
+Ass_($from, $to, $label, "-.UP-")
+!endprocedure
+
+!unquoted procedure Ass_D($from, $to, $label)
+Ass_($from, $to, $label, "-DOWN-")
+!endprocedure
+
+!unquoted procedure Ass_D_dashed($from, $to, $label)
+Ass_($from, $to, $label, "-.DOWN-")
+!endprocedure
+
+!unquoted procedure Ass_L($from, $to, $label)
+Ass_($from, $to, $label, "-LEFT-")
+!endprocedure
+
+!unquoted procedure Ass_L_dashed($from, $to, $label)
+Ass_($from, $to, $label, "-.LEFT-")
+!endprocedure
+
+!unquoted procedure Ass_R($from, $to, $label)
+Ass_($from, $to, $label, "-RIGHT-")
+!endprocedure
+
+!unquoted procedure Ass_R_dashed($from, $to, $label)
+Ass_($from, $to, $label, "-.RIGHT-")
+!endprocedure
